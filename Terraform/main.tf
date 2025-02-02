@@ -103,26 +103,31 @@ resource "aws_security_group" "prime_app_sg" {
   }
 }
 
-# resource "aws_instance" "jenkins_instance" {
-#   ami           = var.ami_id
-#   instance_type = var.instance_types["jenkins"]
+resource "aws_instance" "jenkins_instance" {
+  ami           = var.ami_id
+  instance_type = var.instance_types["jenkins"]
 
-#   key_name        = aws_key_pair.project_setup_key.key_name
-#   security_groups = [aws_security_group.prime_app_sg.name]
+  key_name        = aws_key_pair.project_setup_key.key_name
+  security_groups = [aws_security_group.prime_app_sg.name]
 
-#   user_data = templatefile("./setup_jenkins.sh", {})
+  user_data = templatefile("./scripts/setup_jenkins.sh", {})
 
-#   tags = {
-#     name = "Jenkins-Server"
-#   }
+  root_block_device {
+    volume_size = 25    # Set the size to 25GB
+    volume_type = "gp2" # General Purpose SSD
+  }
 
-#   connection {
-#     type        = "ssh"
-#     user        = "ubuntu"
-#     private_key = "${path.root}/../project-setup-key.pem"
-#     host        = self.public_ip
-#   }
-# }
+  tags = {
+    Name = "Jenkins-Server"
+  }
+
+  connection {
+    type        = "ssh"
+    user        = "ubuntu"
+    private_key = "${path.root}/../project-setup-key.pem"
+    host        = self.public_ip
+  }
+}
 
 resource "aws_instance" "tools_instance" {
   ami           = var.ami_id
@@ -143,7 +148,7 @@ resource "aws_instance" "tools_instance" {
   })
 
   tags = {
-    name = "tools-server"
+    Name = "tools-server"
   }
 
   connection {
