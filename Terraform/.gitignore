@@ -1,0 +1,35 @@
+# Terraform local files
+*.tfstate
+*.tfstate.backup
+.terraform/
+.terraform.lock.hcl
+
+# Crash logs
+crash.log
+
+# Variables and secrets
+*.tfvars
+*.tfvars.json
+!example.tfvars  # Allow example variable files
+terraform.tfvars
+terraform.tfvars.json
+
+# Provider-specific overrides
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Plan files
+*.tfplan
+
+# Sensitive logs
+*.log
+*.log.*
+
+# Ignore IDE/editor files
+.vscode/
+.idea/
+.DS_Store
+*.swp
+*.swo
