@@ -17,7 +17,7 @@ resource "aws_key_pair" "project_setup_key" {
 # Save the private key to a local file with proper permissions
 resource "local_file" "setup_pem" {
   content         = tls_private_key.project_setup_key.private_key_pem
-  filename        = "${path.root}/../project-setup-key.pem"
+  filename        = "${path.root}/../${aws_key_pair.project_setup_key.key_name}.pem"
   file_permission = "0600" # Set permissions for the private key to be secure
 }
 
@@ -124,7 +124,7 @@ resource "aws_instance" "jenkins_instance" {
   connection {
     type        = "ssh"
     user        = "ubuntu"
-    private_key = "${path.root}/../project-setup-key.pem"
+    private_key = "${path.root}/../${aws_key_pair.project_setup_key.key_name}.pem"
     host        = self.public_ip
   }
 }
@@ -154,7 +154,7 @@ resource "aws_instance" "tools_instance" {
   connection {
     type        = "ssh"
     user        = "ubuntu"
-    private_key = "${path.root}/../project-setup-key.pem"
+    private_key = "${path.root}/../${aws_key_pair.project_setup_key.key_name}.pem"
     host        = self.public_ip
   }
 }
