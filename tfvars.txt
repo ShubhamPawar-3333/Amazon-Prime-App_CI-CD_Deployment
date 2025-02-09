@@ -1,0 +1,48 @@
+ami_id   = "ami-023a307f3d27ea427"
+key_name = "project-setup-key"
+instance_types = {
+  "jenkins" = "t2.medium"
+  "tools"   = "t2.medium"
+}
+docker_username = "shubhamp368"
+docker_password = "S@862400p."
+
+command to copy key-pair to jenkins server
+ssh -i /home/ubuntu/.ssh/<KEY_NAME>.pem ubuntu@<JENKINS_PUBLIC_IP> // On local machine
+chmod 600 /home/ubuntu/.ssh/<KEY_NAME>.pem // On jenkins server
+
+If you need the key available for the jenkins user, copy it to the Jenkins home directory:
+sudo cp -r /home/ubuntu/.ssh/<KEY_NAME>.pem /var/lib/jenkins/
+sudo chown jenkins:jenkins /var/lib/jenkins/<KEY_NAME>.pem
+sudo chmod 600 /var/lib/jenkins/<KEY_NAME>.pem
+
+You can use the scp (secure copy) command to copy your SSH key pair from your local machine to your Jenkins EC2 instance. Here’s how:
+
+Step 1: Copy the Private Key to Jenkins EC2
+Run the following command from your local machine:
+
+scp -i /path/to/local-private-key.pem /path/to/key-to-copy.pem ec2-user@your-jenkins-ec2-ip:/home/ec2-user/
+
+Replace /path/to/local-private-key.pem with your local SSH key that allows access to the Jenkins EC2.
+Replace /path/to/key-to-copy.pem with the SSH key you want to copy.
+Replace your-jenkins-ec2-ip with the public IP of your Jenkins EC2 instance.
+Replace ec2-user with the correct username (e.g., ubuntu for Ubuntu instances or ec2-user for Amazon Linux).
+
+Step 2: Set Proper Permissions on the Jenkins EC2 Instance
+Once copied, SSH into your Jenkins EC2 instance:
+
+ssh -i /path/to/local-private-key.pem ec2-user@your-jenkins-ec2-ip
+
+Then, set the correct permissions:
+
+chmod 600 /home/ec2-user/key-to-copy.pem
+
+If you need the key available for the jenkins user, move it to the Jenkins home directory:
+
+sudo mv /home/ec2-user/key-to-copy.pem /var/lib/jenkins/
+sudo chown jenkins:jenkins /var/lib/jenkins/key-to-copy.pem
+sudo chmod 600 /var/lib/jenkins/key-to-copy.pem
+
+Now, the key pair is available for Jenkins jobs.
+
+
