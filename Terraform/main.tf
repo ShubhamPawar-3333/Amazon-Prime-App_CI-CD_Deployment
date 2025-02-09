@@ -110,7 +110,10 @@ resource "aws_instance" "jenkins_instance" {
   key_name        = aws_key_pair.project_setup_key.key_name
   security_groups = [aws_security_group.prime_app_sg.name]
 
-  user_data = templatefile("./scripts/setup_jenkins.sh", {})
+  user_data = templatefile("./scripts/setup_jenkins.sh", {
+    docker_username = var.docker_username
+    docker_password = var.docker_password
+  })
 
   root_block_device {
     volume_size = 25    # Set the size to 25GB
@@ -131,7 +134,7 @@ resource "aws_instance" "jenkins_instance" {
 
 resource "aws_instance" "tools_instance" {
   ami           = var.ami_id
-  instance_type = var.instance_types["tools"]
+  instance_type = var.instance_types["sonarqube"]
 
   key_name        = aws_key_pair.project_setup_key.key_name
   security_groups = [aws_security_group.prime_app_sg.name]
@@ -142,13 +145,10 @@ resource "aws_instance" "tools_instance" {
     volume_type = "gp2" # General Purpose SSD
   }
 
-  user_data = templatefile("./scripts/setup_tools.sh", {
-    docker_username = var.docker_username
-    docker_password = var.docker_password
-  })
+  user_data = templatefile("./scripts/setup_sonarqube.sh", {})
 
   tags = {
-    Name = "tools-server"
+    Name = "SonarQube-server"
   }
 
   connection {
